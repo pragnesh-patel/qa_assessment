@@ -1,83 +1,36 @@
-import org.openqa.selenium.*;
- 
-import org.openqa.selenium.WebDriver;
- 
-import org.openqa.selenium.WebElement;
- 
-public class Search_Page extends PageObject{
- 
-           private static WebElement element = null;
-private static List<WebElement> results = null;
- 
-    public static WebElement txtSearchControl(){
- 
-         element = driver.findElement(By.css(“div.search-field > input“));
- 
-         return element;
- 
-         }
- 
-    public static WebElement btnSearchButton(){
- 
-         element = driver.findElement(By.css(“input#search.search-submit“));
- 
-         return element;
- 
-         }
- 
-    public static WebElement btnClearSearch(){
- 
-         element = driver.findElement(By.css(“a#global-search-new”));
- 
-         return element;
- 
-         }
-public static WebElement btnSearchOptions(){
- 
-         element = driver.findElement(By.css(“div#search-options“));
- 
-         return element;
- 
-         }
-    public static List<WebElement> btnSearchResults(){
- 
-         results = driver.findElements(By.css(“ol#results-list“));
- 
-         return results;
- 
-         }
+@Before
+public void beforeScenario() {
 
-public void goSearchPage(String page){
+Webdriver driver = new FirefoxDriver();
+}
 
-    driver.get(page)
-  }
+@After
+public void afterScenario() {
 
-public void SearchFor(String Keyword){
+driver.quit();
+}
 
-    txtSearchControl.sendkeys(Keyword);
-    btnSearchButton.click()
-          
-    }
 
-public bool SearchResult(String Result){
+public class SearchByKeywordStepDefinitions {
+@Steps
+Search_Page searchpage(driver);
 
-bool found;
+@Given("I am on the (.*) site”)
+public void NavigateToSearchpage(String url) {
+searchpage.goSearchPage(url);
+}
 
-found  = driver.findElement(By.xpath(“//*[@class='no-access']/a[contains(text(),’” + Result + “ ’)]“));
-if (found != null){
-  return true; }
-else{
-  return false;
-    }  
-  }
-public bool noResultsFound(){
+@When("I search for items containing '(.*)'")
+public void searchByKeyword(String keyword) {
+searchpage.SearchFor(keyword);
+}
+@Then("I can see a list of search results relating to '(.*)'")
+public void resultsForACategoryAndKeywordInARegion(String keyword) {
+assert(searchpage.SearchResult(keyword) == true);
+}
+@Then("I should not see any results”)
+public bool noResultsFound() {
+assert(searchpage.noResult() == true);
 
-element = driver.findElement(By.xpath(“//*[@id="no-results-message"]/h2/[contains(text(),’we couldn’t find what you are looking for’)]”));
-if (element != null){
-  return true; }
-else{
-  return false;
-    }  
-
-  }
+}
 }
