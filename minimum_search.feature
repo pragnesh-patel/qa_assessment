@@ -1,38 +1,14 @@
-@Before
-public void beforeScenario() {
+Feature File :minimum test for search.
 
-Webdriver driver = new FirefoxDriver();
-}
+  @minimumtest
+  Feature: Very Basic minimal Test Search of link.springer.com
 
-@After
-public void afterScenario() {
+  Scenario: Search Items with results
+    Given I am on the ‘http://link.springer.com’ site
+    When I search for Items containing ‘Chemistry’
+    Then I can see a list of search results relating to ‘Chemistry’
 
-driver.quit();
-}
-
-
-public class SearchByKeywordStepDefinitions {
-@Steps
-Search_Page searchpage(driver);
-
-@Given("I am on the (.*) site”)
-public void NavigateToSearchpage(String url) {
-searchpage.goSearchPage(url);
-}
-
-@When("I search for items containing '(.*)'")
-public void searchByKeyword(String keyword) {
-searchpage.SearchFor(keyword);
-}
-
-@Then("I can see a list of search results relating to '(.*)'")
-public void resultsForACategoryAndKeywordInARegion(String keyword) {
-assert(searchpage.SearchResult(keyword) == true);
-}
-
-@Then("I should not see any results”)
-public bool noResultsFound() {
-assert(searchpage.noResult() == true);
-
-}
-}
+  Scenario: Search with no results
+    Given I am on the ‘http://link.springer.com’ site
+    When I search for Items containing ‘Womball’
+    Then I should not see any results
